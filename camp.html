@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Camp Recommendation</title>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <link rel="stylesheet" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        #map-container {
+            height: 70vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <label for="state">Enter the state:</label>
+        <input type="text" id="state" name="state">
+        <button onclick="startRecommendation()">Start Recommendation</button>
+    </div>
+    <div id="map-container"></div>
+
+    <script>
+        var platform = new H.service.Platform({
+            'apikey': 'your_api_key'
+        });
+
+        var defaultLayers = platform.createDefaultLayers();
+        var map = new H.Map(
+            document.getElementById('map-container'),
+            defaultLayers.vector.normal.map,
+            {
+                center: { lat: 20.5937, lng: 78.9629 },
+                zoom: 5
+            });
+
+        var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+        var service = platform.getSearchService();
+        var markerCount = 0;
+
+        function startRecommendation() {
+            var state = document.getElementById('state').value;
+            findStateBounds(state);
+        }
+
+        function findStateBounds(state) {
+            var stateBounds = {
+                'Andaman and Nicobar Islands': [
+                    { lat: 25.47099530, lng: 79.60508933 },
+                    { lat: 28.47485168, lng: 80.55468988 },
+                    { lat: 25.77067578, lng: 83.7833159 },
+                    { lat: 28.18229519, lng: 77.56344830 }
+                ],
+                'Bihar': [
+                    { lat: 25.88148978, lng: 84.61083716 },
+                    { lat: 25.36390815, lng: 87.56301186 },
+                    { lat: 26.65361751, lng: 85.96391723 },
+                    { lat: 24.54608090, lng: 85.225587355 }
+                ],
+                'Uttar Pradesh': [
+                    { lat: 25.47099530, lng: 79.60508933 },
+                    { lat: 28.47485168, lng: 80.55468988 },
+                    { lat: 25.77067578, lng: 83.7833159 },
+                    { lat: 28.18229519, lng: 77.56344830 }
+                ],
+                'Andhra Pradesh': [
+                    { lat: 14.85644777, lng: 76.94918165 },
+                    { lat: 14.98266170, lng: 79.95337947 },
+                    { lat: 18.73200891, lng: 83.6759597242 },
+                    { lat: 13.36806070, lng: 78.64720650 }
+                ],
+                'Arunachal Pradesh': [
+                    { lat: 27.72167434, lng: 91.80689914 },
+                    { lat: 28.49933076, lng: 96.31319587 },
+                    { lat: 29.18580831, lng: 94.97436858 },
+                    { lat: 27.60598834, lng: 94.25597345 }
+                ],
+                'Assam': [
+                    { lat: 26.47169531, lng: 89.84763969 },
+                    { lat: 26.06174080, lng: 93.76615859 },
+                    { lat: 26.85106445, lng: 93.11307210 },
+                    { lat: 26.00305797, lng: 92.19875103 }
+                ],
+                'Bihar': [
+                    { lat: 24.82330501, lng: 85.53726890 },
+                    { lat: 26.64694546, lng: 86.25566403 },
+                    { lat: 26.26706306, lng: 87.69245429 },
+                    { lat: 25.73862296, lng: 84.65560215 }
+                ],
+                'Chhattisgarh': [
+                    { lat: 18.29851267, lng: 80.73708325 },
+                    { lat: 23.93102373, lng: 83.31677486 },
+                    { lat: 21.61284360, lng: 80.866770054 },
+                    { lat: 21.03488952, lng: 82.27183648 }
+                ],
+                'Punjab': [
+                    { lat: 32.13187852, lng: 75.33203787 },
+                    { lat: 30.11330607, lng: 74.70781328 },
+                    { lat: 31.12796040, lng: 74.63845499 },
+                    { lat: 30.65180113, lng: 76.61516619 }
+                ],
+                'Rajasthan': [
+                    { lat: 27.40801731, lng: 69.85273314 },
+                    { lat: 26.10750293, lng: 76.40709133 },
+                    { lat: 29.96319896, lng: 73.97955126 },
+                    { lat: 24.54024213, lng: 73.32064752 }
+                ],
+                'Sikkim': [
+                    { lat: 27.31561941, lng: 88.12864196 },
+                    { lat: 27.50033802, lng: 88.85690398 },
+                    { lat: 28.11382369, lng: 88.64882911 },
+                    { lat: 27.19230242, lng: 88.30203767 }
+                ],
+                'Tamil Nadu': [
+                    { lat: 9.23179737, lng: 78.38718537 },
+                    { lat: 12.80194030, lng: 78.46142630 },
+                    { lat: 11.16799131, lng: 76.82812578 },
+                    { lat: 10.80358983, lng: 79.24095610 }
+                ],
+                'Telangana': [
+                    { lat: 19.60562284, lng: 78.75839003 },
+                    { lat: 16.14405276, lng: 78.72126957 },
+                    { lat: 17.52965309, lng: 77.71901697 },
+                    { lat: 17.60043253, lng: 80.65153382 }
+                ],
+                'Tripura': [
+                    { lat: 23.67596870, lng: 91.30510766 },
+                    { lat: 24.11716683, lng: 92.30736025 },
+                    { lat: 24.11716683, lng: 91.63919186 },
+                    { lat: 23.77791709, lng: 91.89903512 }
+                ],
+                'Chandigarh': [
+                    { lat: 32.13187852, lng: 75.33203787 },
+                    { lat: 30.11330607, lng: 74.70781328 },
+                    { lat: 31.12796040, lng: 74.63845499 },
+                    { lat: 30.65180113, lng: 76.61516619 }
+                ],
+                'Ladakh': [
+                    { lat: 36.57330610, lng: 73.51143639 },
+                    { lat: 34.12357921, lng: 78.7063155 },
+                    { lat: 35.34331961, lng: 77.64617274 },
+                    { lat: 34.24051893, lng: 76.44462542 }
+                ],
+                'Jammu and Kashmir': [
+                    { lat: 33.88543905, lng: 73.74940858 },
+                    { lat: 33.79763933, lng: 76.00453006 },
+                    { lat: 34.8452399, lng: 74.45413404 },
+                    { lat: 32.91470294, lng: 75.05315069 }
+                ],
+                'Uttarakhand': [
+                    { lat: 30.60222139, lng: 77.96422938 },
+                    { lat: 30.05316272, lng: 80.40266364 },
+                    { lat: 31.05740787, lng: 79.09509745 },
+                    { lat: 29.53179589, lng: 79.16577670 }
+                ],
+                'West Bengal': [
+                    { lat: 23.33387593, lng: 86.19836247 },
+                    { lat: 23.33387593, lng: 88.77815523 },
+                    { lat: 24.40033558, lng: 88.03602307 },
+                    { lat: 24.16063148, lng: 88.3187008 }
+                ],
+                'Maharashtra': [
+                    { lat: 17.62816923, lng: 75.658320 },
+                    { lat: 21.29025791, lng: 75.81650061 },
+                    { lat: 20.74631540, lng: 80.23542694 },
+                    { lat: 21.29025791, lng: 75.81650061 }
+                ],
+                'Himachal Pradesh': [
+                    { lat: 31.604889, lng: 76.9195330 },
+                    { lat: 32.110542, lng: 76.536224 },
+                    { lat: 31.104605, lng: 77.17342 },
+                    { lat: 31.94664031, lng: 78.43872063 }
+                ],
+                'Karnataka': [
+                    { lat: 17.179991, lng: 77.275368 },
+                    { lat: 12.12, lng: 76.68 },
+                    { lat: 16.1667, lng: 74.833298 },
+                    { lat: 12.715035, lng: 77.28129 }
+                ],
+                'Kerala': [
+                    { lat: 10.08596229, lng: 76.2283756 },
+                    { lat: 8.08268999, lng: 76.65531227 },
+                    { lat: 11.68511364, lng: 76.29338004 },
+                    { lat: 8.08268999, lng: 76.65531227 }
+                ],
+                'Gujarat': [
+                    { lat: 23.38467540, lng: 69.83686901 },
+                    { lat: 23.39556979, lng: 69.91011946 },
+                    { lat: 23.39214192, lng: 69.904317 },
+                    { lat: 23.39556979, lng: 69.91011946 }
+                ],
+                'Madhya Pradesh': [
+                    { lat: 23.55975349, lng: 77.4663466 },
+                    { lat: 23.56517768, lng: 77.45036712 },
+                    { lat: 23.56517768, lng: 77.45036712 },
+                    { lat: 23.56517768, lng: 77.45036712 }
+                ],
+                'Dadra and Nagar Haveli': [
+                    { lat: 20.19593649, lng: 73.00334607 },
+                    { lat: 20.21409566, lng: 73.07386435 },
+                    { lat: 20.21409566, lng: 73.07386435 },
+                    { lat: 20.21409566, lng: 73.07386435 }
+                ],
+                'Daman and Diu': [
+                    { lat: 20.38709867, lng: 72.8375738 },
+                    { lat: 20.38814708, lng: 72.85902631 },
+                    { lat: 20.38814708, lng: 72.85902631 },
+                    { lat: 20.38814708, lng: 72.85902631 }
+                ],
+                'Delhi': [
+                    { lat: 28.52447529, lng: 77.1855905 },
+                    { lat: 28.88388225, lng: 77.2847338 },
+                    { lat: 28.88388225, lng: 77.2847338 },
+                    { lat: 28.88388225, lng: 77.2847338 }
+                ]
+            
+                // Add other states' coordinates here
+            };
+
+            var bounds = stateBounds[state];
+
+            if (bounds) {
+                performRecommendation(bounds);
+            } else {
+                alert('State boundaries not available.');
+            }
+        }
+
+        function performRecommendation(bounds) {
+            var delay = 0;
+            var latStep = (bounds[1].lat - bounds[0].lat) / 5;
+            var lngStep = (bounds[2].lng - bounds[0].lng) / 5;
+
+            for (var lat = bounds[0].lat; lat < bounds[1].lat; lat += latStep) {
+                for (var lng = bounds[0].lng; lng < bounds[2].lng; lng += lngStep) {
+                    setTimeout(findNearbyHospitals, delay, { lat: lat, lng: lng });
+                    delay += 1000;
+                }
+            }
+        }
+
+        function findNearbyHospitals(coordinates) {
+            if (markerCount >= 10) return;
+
+            service.browse({
+                at: coordinates.lat + ',' + coordinates.lng,
+                limit: 1,
+                categories: '800-8000-0159',
+            }, (result) => {
+                var hospitals = result.items;
+
+                var allFartherThan5km = hospitals.every(hospital => {
+                    var distance = calculateDistance(coordinates, hospital.position);
+                    return distance > 5;
+                });
+
+                if (allFartherThan5km && markerCount < 20) {
+                    service.reverseGeocode({
+                        at: coordinates.lat + ',' + coordinates.lng
+                    }, (result) => {
+                        var address = result.items[0].address.label;
+                        var icon = new H.map.Icon('https://img.icons8.com/color/48/000000/marker.png');
+                        var marker = new H.map.Marker(coordinates, { icon: icon });
+                        marker.setData('Address: ' + address);
+                        marker.addEventListener('tap', function(evt) {
+                            alert(evt.target.getData());
+                        });
+                        map.addObject(marker);
+                        markerCount++;
+                    });
+                }
+            });
+        }
+
+        function calculateDistance(pos1, pos2) {
+            var rad = function(x) {
+                return x * Math.PI / 180;
+            };
+            var R = 6371;
+            var dLat = rad(pos2.lat - pos1.lat);
+            var dLong = rad(pos2.lng - pos1.lng);
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(rad(pos1.lat)) * Math.cos(rad(pos2.lat)) *
+                    Math.sin(dLong / 2) * Math.sin(dLong / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var distance = R * c;
+            return distance;
+        }
+    </script>
+</body>
+</html>

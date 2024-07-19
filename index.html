@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealHive Healthcare</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="hospital.js" defer></script>
+    <script src="camp.js" defer></script>
+
+
+</head>
+<body>
+    <header class="header-section">
+        <h1>HealHive Healthcare by Yuktika</h1>
+    </header>
+
+    <div class="emergency-support">
+        <button class="emergency-button">One Tap Emergency Support</button>
+        <p class="button-description" ><b>Our services are here to help you in emergencies.</b></p>
+    </div>
+    
+    <br>
+    <br>
+
+    <div class="services-container">
+        <div class="service">
+            <img src="image3.jpg" alt="Service 1 Image">
+         
+            <button class="buttonservice1" id="predictButton1">MEDICINE REMINDER</button>
+        </div>
+        <div class="service">
+            <img src="image2.jpg" alt="Service 2 Image">
+            
+            <button class="buttonservice2">MEDICAL CAMPS/HOSPITALS</button>
+        </div>
+        <div class="service">
+            <img src="image1.jpg" alt="Service 3 Image">
+            
+            <button class="buttonservice3" id="predictButton2">PREDICT DISEASE</button>
+        </div>
+        
+    </div>
+    <br>
+    <br>
+
+    <div class="about-services">
+        <h2>About Our Services</h2>
+        
+        <ol>
+            <li>
+                <h3>Medical Camp Location Recommendation</h3>
+                <p>Utilizing the HERE Maps API, our platform identifies optimal sites for medical camps, ensuring targeted outreach to areas lacking healthcare infrastructure within a range of 5km.</p>
+            </li>
+            <li>
+                <h3>Medicine Reminder for Uneducated or Elderly Individuals</h3>
+                <p>Leveraging PyWhatKit, we provide personalized medication reminders along with descriptions and images of medicine via WhatsApp, facilitating adherence for individuals facing challenges such as inability to read.</p>
+            </li>
+            <li>
+                <h3>Chronic disease prediction</h3>
+                <p>Chronic disease prediction models powered by machine learning algorithms analyze patient data to forecast the likelihood of developing conditions like diabetes, heart disease, or hypertension. By leveraging individual health profiles and risk factors, these models enable early intervention, personalized care , ultimately leading to improved patient outcomes and healthcare system efficiency."</p>
+            </li>
+            <li>
+                <h3>Emergency One-Tap Solution</h3>
+                <p>In times of crisis or accidents, our solution integrates SMS alerts to healthcare organizations, offering a swift and efficient means to alert emergency service organizations to quickly arrange for possible support such as ambulances for helping the patients.</p>
+            </li>
+        </ol>
+    </div>
+    
+    
+    <script>
+        document.getElementById("predictButton2").addEventListener("click", function() {
+            window.open("http://192.168.90.90:8501", "_blank");
+        });
+    </script>
+    <script>
+        document.getElementById("predictButton1").addEventListener("click", function() {
+            window.open("http://192.168.90.77:8501", "_blank");
+        });
+    </script>
+    
+
+
+</body>
+</html>
